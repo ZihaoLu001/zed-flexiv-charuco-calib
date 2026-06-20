@@ -50,11 +50,13 @@ def inspect_main():
         print(f"  {c.index:>3} {c.n_corners:>7} {rms:>7} {foc:>8}")
     usable = sess.usable()
     if len(usable) >= 3:
-        div = assess_diversity([c.T_base_flange for c in usable], DiversityGates())
+        div = assess_diversity([c.T_base_flange for c in usable], DiversityGates(),
+                               board_poses_T=[c.T_cam_board_mat for c in usable])
         print(f"\ndiversity verdict: {div.verdict}")
         for r in div.reasons:
             print(f"  - {r}")
         print(f"  rotation_axes={div.rotation_axes}  coplanarity={div.coplanarity_index:.4f}  "
+              f"distinct_depths={div.distinct_depths}  "
               f"max_interpose_rot={div.max_interpose_rotation_deg:.1f}deg  "
               f"span={div.translation_span_m:.3f}m")
     else:
@@ -182,8 +184,9 @@ def collect_main():
 
 def intrinsics_main():
     from .board import make_board, make_detector, resolve_legacy_pattern
-    from .config import BoardConfig, ZedConfig
-    from .detect import detect_charuco
+    from .config import BoardConfig, CoverageGates, ZedConfig
+    from .coverage import coverage_report, render_coverage_heatmap
+    from .detect import board_pose_pnp, detect_charuco
     from .intrinsics import audit_against_factory, calibrate_intrinsics
     from .yaml_out import write_intrinsics_yaml
     from .zed_io import ZedCamera
@@ -193,6 +196,8 @@ def intrinsics_main():
     ap.add_argument("--board", default="configs/board_calibio_9x14.yaml")
     ap.add_argument("--frames", type=int, default=20)
     ap.add_argument("--mode", choices=["audit", "free"], default="audit")
+    ap.add_argument("--distortion-model", choices=["brown5", "rational8", "fisheye"],
+                    default="brown5", help="free-mode distortion model (ignored in audit mode)")
     ap.add_argument("--out", default="zed2i_intrinsics.yaml")
     a = ap.parse_args()
 
@@ -210,9 +215,36 @@ def intrinsics_main():
             print(f"   corners={det.n_corners} focus={det.laplacian_var:.0f}")
             if det.ok:
                 dets.append(det)
-    res = calibrate_intrinsics(dets, board, image_size, K0=factory_K, mode=a.mode)
-    print(f"\nmode={res.mode}  views={res.n_views}  reprojection_rms={res.rms_px:.4f}px")
+
+    # coverage assessment (X/Y/Size/Skew) before trusting the solve; skew needs board poses
+    board_poses = []
+    for det in dets:
+        try:
+            T, _ = board_pose_pnp(det, board, factory_K, D=None)
+            board_poses.append(T)
+        except Exception:
+            pass
+    cov = coverage_report(dets, image_size, board_poses_T=board_poses or None, gates=CoverageGates())
+    print(f"\ncoverage: {cov.as_dict()}")
+    for r in cov.reasons:
+        print(f"  - {r}")
+    try:
+        print(f"coverage heatmap -> {render_coverage_heatmap(cov, 'intrinsics_coverage.png')}")
+    except Exception as e:
+        print(f"  (heatmap skipped: {e})")
+
+    res = calibrate_intrinsics(dets, board, image_size, K0=factory_K, mode=a.mode,
+                               distortion_model=a.distortion_model)
+    from .config import PassBars
+    bars = PassBars()
+    rms_verdict = ("PASS" if res.rms_px <= bars.intrinsics_rms_px_pass
+                   else "FAIL" if res.rms_px > bars.intrinsics_rms_px_fail else "WARN")
+    print(f"\nmode={res.mode}  model={res.distortion_model}  views={res.n_views}  "
+          f"reprojection_rms={res.rms_px:.4f}px  [{rms_verdict}: pass<={bars.intrinsics_rms_px_pass} "
+          f"fail>{bars.intrinsics_rms_px_fail}]")
     print(f"K=\n{np.round(res.K, 3)}")
+    if res.param_std:
+        print(f"param std-dev (uncertainty): {res.as_dict()['param_std']}")
     audit = None
     if a.mode == "audit":
         free = calibrate_intrinsics(dets, board, image_size, K0=factory_K, mode="free")

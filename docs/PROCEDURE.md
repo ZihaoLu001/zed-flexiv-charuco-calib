@@ -38,7 +38,7 @@ Target **≥ 20 poses**. For each pose, keep the **entire board in view and in f
 - **Wrist orientation** across **≥ 3 non-parallel axes** (roll, pitch, yaw — not just one).
 - **Distance** to the camera (near / mid / far) — this is what constrains depth.
 - **Position** across the image (don't keep the board centered every time).
-- Tilt the board ±20–30° in different directions.
+- Tilt the board **20–45°** in different directions (the coverage gate enforces a floor of **≥ 20°**).
 
 Avoid: all poses at the same height (a plane), tiny rotations only, or the board filling < ¼ of the
 frame.
@@ -86,8 +86,12 @@ Copy `T_base_zed2i.yaml` to your consumer (e.g. ActAhead's `config/calibration/`
 
 | Symptom | Likely cause | Fix |
 |---|---|---|
+| `AttributeError: cv2.aruco.CharucoDetector` | `opencv-python` + `opencv-contrib-python` both installed | keep only `opencv-contrib-python` (`pip uninstall opencv-python`) |
 | diversity FAIL: coplanarity | poses on one plane | vary camera distance & height |
 | diversity FAIL: rotation axes | only one wrist axis used | add roll/pitch/yaw poses |
+| diversity FAIL: distinct depths | every view at one working distance | capture near + mid + far |
+| coverage WARN: width/height/cells | board never reached the frame edges | slide the board around the whole image |
+| coverage WARN: size ratio / tilt | one distance / never tilted | add near+far and ±45° tilted views |
 | five-solver spread large | bad pairings / too few poses | drop outliers, capture more |
 | touch test bad, metrics good | weak depth constraint or board-size error | re-measure board; add near/far poses |
-| no corners detected | wrong dictionary or `legacy_pattern` | fix `aruco_dict`; leave `legacy_pattern: null` to auto-resolve |
+| no corners detected | wrong dictionary, `legacy_pattern`, or glossy mount | fix `aruco_dict`; `legacy_pattern: null` to auto-resolve; use a matte board |

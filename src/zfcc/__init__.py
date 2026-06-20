@@ -12,7 +12,7 @@ from __future__ import annotations
 
 from . import se3  # noqa: F401  (pure-numpy core, safe to import eagerly)
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 __all__ = ["se3", "__version__"]
 
@@ -21,7 +21,7 @@ def __getattr__(name):
     # Lazy submodule access so `import zfcc` never pulls cv2/pyzed/flexivrdk transitively.
     import importlib
 
-    if name in {"board", "config", "detect", "diversity", "handeye", "intrinsics",
-                "robot_io", "session", "touch_test", "validate", "yaml_out", "zed_io"}:
+    if name in {"board", "config", "coverage", "detect", "diversity", "handeye", "intrinsics",
+                "refine", "robot_io", "session", "touch_test", "validate", "yaml_out", "zed_io"}:
         return importlib.import_module(f".{name}", __name__)
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

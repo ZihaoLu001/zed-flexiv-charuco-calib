@@ -15,7 +15,7 @@ from .config import DiversityGates
 
 __all__ = ["DiversityReport", "rotation_axis_spread_deg", "n_distinct_rotation_axes",
            "coplanarity_index", "min_interpose_rotation_deg", "translation_span_m",
-           "assess_diversity"]
+           "distinct_depths", "assess_diversity"]
 
 
 def _axes(poses_T):
@@ -82,6 +82,24 @@ def translation_span_m(positions) -> float:
     return float(np.max(np.linalg.norm(P[:, None, :] - P[None, :, :], axis=-1)))
 
 
+def distinct_depths(board_poses_T, bin_m: float = 0.05) -> int:
+    """Count board-to-camera working distances that are mutually separated by >= ``bin_m``.
+
+    The board's depth in the CAMERA frame (``T_cam_board`` z) is what constrains focal length and the
+    camera Z of the extrinsic; seeing the board at only one distance is a classic weak-Z set. Uses a
+    greedy sorted merge (like ``n_distinct_rotation_axes``) so the count reflects genuine separation
+    and is independent of where depths fall relative to fixed bin edges. Returns 0 if no board poses.
+    """
+    if board_poses_T is None or len(board_poses_T) == 0:
+        return 0
+    depths = sorted(float(T[2, 3]) for T in board_poses_T)
+    reps = []
+    for d in depths:
+        if all(abs(d - r) >= bin_m for r in reps):
+            reps.append(d)
+    return len(reps)
+
+
 @dataclass
 class DiversityReport:
     n_poses: int
@@ -91,6 +109,7 @@ class DiversityReport:
     coplanarity_index: float
     translation_span_m: float
     verdict: str                      # PASS / WARN / FAIL
+    distinct_depths: int = -1         # -1 = not assessed (board poses not supplied)
     reasons: list = field(default_factory=list)
 
     def as_dict(self) -> dict:
@@ -100,13 +119,19 @@ class DiversityReport:
             "rotation_axis_spread_deg": round(self.rotation_axis_spread_deg, 2),
             "coplanarity_index": round(self.coplanarity_index, 4),
             "translation_span_m": round(self.translation_span_m, 3),
+            "distinct_depths": self.distinct_depths,
             "verdict": self.verdict,
             "reasons": self.reasons,
         }
 
 
-def assess_diversity(flange_poses_T, gates: DiversityGates | None = None) -> DiversityReport:
-    """Grade a pose set; the solve refuses to write a calibration if the verdict is FAIL."""
+def assess_diversity(flange_poses_T, gates: DiversityGates | None = None,
+                     board_poses_T=None) -> DiversityReport:
+    """Grade a pose set; the solve refuses to write a calibration if the verdict is FAIL.
+
+    ``board_poses_T`` (list of T_cam_board) is optional but recommended: it enables the
+    distinct-working-distance gate (focal length / camera-Z are weak if every view is at one depth).
+    """
     g = gates or DiversityGates()
     positions = np.asarray([T[:3, 3] for T in flange_poses_T], dtype=float)
     n = len(flange_poses_T)
@@ -120,6 +145,7 @@ def assess_diversity(flange_poses_T, gates: DiversityGates | None = None) -> Div
                 flange_poses_T[i][:3, :3] @ flange_poses_T[j][:3, :3].T))
     cop = coplanarity_index(positions)
     span = translation_span_m(positions)
+    ndepths = distinct_depths(board_poses_T, g.depth_bin_m) if board_poses_T is not None else -1
 
     reasons, verdict = [], "PASS"
 
@@ -147,7 +173,11 @@ def assess_diversity(flange_poses_T, gates: DiversityGates | None = None) -> Div
             fail(f"max inter-pose rotation {maxrot:.1f} deg too small")
         else:
             warn(f"max inter-pose rotation {maxrot:.1f} deg (< {g.min_interpose_rotation_deg_pass} ideal)")
+    if ndepths >= 0 and ndepths < g.min_distinct_depths:
+        fail(f"only {ndepths} distinct board-to-camera depths (< {g.min_distinct_depths}); "
+             f"vary the working distance (weak-Z set)")
 
     return DiversityReport(n_poses=n, rotation_axes=naxes, rotation_axis_spread_deg=spread,
                            max_interpose_rotation_deg=maxrot, coplanarity_index=cop,
-                           translation_span_m=span, verdict=verdict, reasons=reasons)
+                           translation_span_m=span, distinct_depths=ndepths,
+                           verdict=verdict, reasons=reasons)

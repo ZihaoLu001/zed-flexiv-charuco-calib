@@ -8,7 +8,8 @@ import pytest
 
 PKG = "zfcc"
 SUBMODULES = ["se3", "config", "board", "detect", "intrinsics", "handeye", "diversity",
-              "validate", "touch_test", "yaml_out", "zed_io", "robot_io", "session"]
+              "validate", "touch_test", "yaml_out", "zed_io", "robot_io", "session",
+              "coverage", "refine"]
 
 
 @pytest.mark.parametrize("mod", SUBMODULES)

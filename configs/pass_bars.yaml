@@ -1,24 +1,23 @@
-# Numeric acceptance bars -- every threshold the verdict logic uses, in one auditable place.
+# Numeric acceptance bars. The bars under "extrinsic write-gates" are the ones `session._grade`
+# actually consumes to decide PASS/WARN/FAIL (zfcc-solve refuses to write the YAML on FAIL).
 # Tighten for a research-grade calibration; loosen only with a documented reason.
 pass_bars:
-  # --- intrinsics (audit of the rectified ZED stream against factory K) ---
+  # --- intrinsics audit (the SEPARATE zfcc-intrinsics tool; not the extrinsic verdict) ---
   intrinsics_rms_px_pass: 0.3      # factory K reprojects this well or better -> trust it
   intrinsics_rms_px_fail: 1.0      # above this, something is wrong (wrong board params? blur?)
-  per_view_rms_multiple: 3.0       # drop a view whose RMS exceeds this x the median
 
-  # --- hand-eye cross-solver agreement (5 solvers should converge) ---
-  cross_solver_translation_mm_pass: 2.0
-  cross_solver_translation_mm_fail: 3.0
-  cross_solver_rotation_deg_pass: 0.2
-  cross_solver_rotation_deg_fail: 0.5
+  # --- extrinsic write-gates (consumed by session._grade) ---
+  cross_solver_translation_mm_pass: 2.0   # > pass -> WARN
+  cross_solver_translation_mm_fail: 3.0   # > fail -> FAIL
+  cross_solver_rotation_deg_pass: 0.2     # > pass -> WARN
+  cross_solver_rotation_deg_fail: 0.5     # > fail -> FAIL
+  axxb_translation_mm_fail: 2.0           # AX=XB pose self-consistency; > fail -> FAIL
+  loo_translation_std_mm_fail: 5.0        # leave-one-out origin instability; > fail -> FAIL
+  robot_world_translation_mm_warn: 2.0    # robot-world cross-check disagreement vs primary -> WARN
+  per_frame_pnp_px_fail: 1.0              # drop a view whose PnP RMS exceeds this (px)
 
-  # --- AX=XB residual + per-frame PnP outlier rejection ---
-  axxb_translation_mm_fail: 2.0
-  per_frame_pnp_px_fail: 1.0
-
-  # --- leave-one-out stability ---
-  loo_translation_std_mm_fail: 5.0
-
-  # --- physical touch test (the number that predicts grasp success) ---
+  # --- physical touch test: OPERATOR REFERENCE ONLY (not enforced, not read by the verdict) ---
+  # zfcc-touch-test prints the measured tip error in mm for you to compare against these by eye;
+  # it is a manual check run AFTER the YAML is written and does not gate the write.
   touch_test_mm_pass: 3.0
   touch_test_mm_fail: 5.0

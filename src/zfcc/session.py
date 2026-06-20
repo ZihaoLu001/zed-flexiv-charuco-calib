@@ -99,7 +99,7 @@ def solve_session(session: CalibrationSession, board_object_points,
 
     report: dict = {"n_captures": len(session.captures), "n_usable": len(usable)}
 
-    div = assess_diversity(flange, gates)
+    div = assess_diversity(flange, gates, board_poses_T=boards)
     report["diversity"] = div.as_dict()
     if div.verdict == "FAIL":
         report["verdict"] = "FAIL"
@@ -156,18 +156,43 @@ def solve_session(session: CalibrationSession, board_object_points,
 
 
 def _grade(report, div, bars: PassBars) -> str:
-    verdict = "PASS" if div.verdict != "WARN" else "WARN"
+    """Combine the gates into a single PASS/WARN/FAIL verdict (strictest wins; no early return so
+    every failing bar is evaluated). The ``*_fail`` bars escalate to FAIL and so refuse the write;
+    the ``*_pass`` / ``*_warn`` bars only downgrade to WARN. Reasons are recorded on the report."""
+    levels = {"PASS": 0, "WARN": 1, "FAIL": 2}
+    verdict = "WARN" if div.verdict == "WARN" else "PASS"
+    reasons = []
+
+    def bump(level, msg):
+        nonlocal verdict
+        if levels[level] > levels[verdict]:
+            verdict = level
+        reasons.append(f"{level}: {msg}")
+
     sp = report.get("cross_solver_spread", {})
-    if sp.get("translation_mm", 0) > bars.cross_solver_translation_mm_fail:
-        return "FAIL"
-    if sp.get("translation_mm", 0) > bars.cross_solver_translation_mm_pass:
-        verdict = "WARN"
-    if sp.get("rotation_deg", 0) > bars.cross_solver_rotation_deg_fail:
-        return "FAIL"
+    st = sp.get("translation_mm", 0)
+    if st > bars.cross_solver_translation_mm_fail:
+        bump("FAIL", f"cross-solver translation spread {st}mm > {bars.cross_solver_translation_mm_fail}")
+    elif st > bars.cross_solver_translation_mm_pass:
+        bump("WARN", f"cross-solver translation spread {st}mm > {bars.cross_solver_translation_mm_pass}")
+    sr = sp.get("rotation_deg", 0)
+    if sr > bars.cross_solver_rotation_deg_fail:
+        bump("FAIL", f"cross-solver rotation spread {sr}deg > {bars.cross_solver_rotation_deg_fail}")
+    elif sr > bars.cross_solver_rotation_deg_pass:
+        bump("WARN", f"cross-solver rotation spread {sr}deg > {bars.cross_solver_rotation_deg_pass}")
+
     ax = report.get("axxb", {})
     if ax.get("translation_mm_max", 0) > bars.axxb_translation_mm_fail:
-        verdict = "WARN"
+        bump("FAIL", f"AX=XB max residual {ax['translation_mm_max']}mm > {bars.axxb_translation_mm_fail}")
+
     loo = report.get("leave_one_out", {})
     if isinstance(loo, dict) and loo.get("origin_std_mm", 0) > bars.loo_translation_std_mm_fail:
-        verdict = "WARN"
+        bump("FAIL", f"leave-one-out std {loo['origin_std_mm']}mm > {bars.loo_translation_std_mm_fail}")
+
+    rw = report.get("robot_world_crosscheck", {})
+    rwt = rw.get("translation_mm", 0) if isinstance(rw, dict) else 0
+    if rwt > bars.robot_world_translation_mm_warn:
+        bump("WARN", f"robot-world cross-check off by {rwt}mm > {bars.robot_world_translation_mm_warn}")
+
+    report["verdict_reasons"] = reasons
     return verdict

@@ -12,6 +12,7 @@ __all__ = [
     "ZedConfig",
     "RobotConfig",
     "DiversityGates",
+    "CoverageGates",
     "PassBars",
     "load_yaml",
 ]
@@ -85,24 +86,50 @@ class DiversityGates:
     min_interpose_rotation_deg_warn: float = 30.0
     min_interpose_rotation_deg_pass: float = 60.0
     coplanarity_index_fail: float = 0.04   # smallest/largest singular-value ratio of centred positions
-    min_distinct_depths: int = 3
+    min_distinct_depths: int = 3           # distinct board-to-camera depths (binned by depth_bin_m)
+    depth_bin_m: float = 0.05              # depth resolution for the distinct-depth count (5 cm bins)
+
+
+@dataclass
+class CoverageGates:
+    """Aggregate intrinsics-coverage bars (ROS camera_calibration X/Y/Size/Skew concept).
+
+    Poor coverage makes focal length + principal point unobservable -- the highest-value preventable
+    intrinsics failure (calib.io). These gate the board's travel across the frame, its working-distance
+    variety, and that at least some views are tilted (foreshortening is what reveals f and the centre)."""
+    grid_x: int = 8
+    grid_y: int = 6
+    min_x_center_fill: float = 0.5    # board centroid must roam >= 50% of image width across views
+    min_y_center_fill: float = 0.5    # ... and >= 50% of height
+    min_corner_area_fill: float = 0.6 # >= 60% of grid cells must receive a detected corner (any view)
+    min_size_ratio: float = 1.5       # max/min per-view board bbox area >= 1.5 (near+far variety)
+    min_skew_deg: float = 20.0        # at least one view tilted >= 20 deg (needs board poses)
 
 
 @dataclass
 class PassBars:
-    """Every numeric acceptance bar in one place (mirrors configs/pass_bars.yaml)."""
+    """Every numeric acceptance bar in one place (mirrors configs/pass_bars.yaml).
+
+    Which bars actually gate the written calibration (consumed by ``session._grade``): the
+    cross-solver, AX=XB, leave-one-out and robot-world bars below. ``intrinsics_rms_*`` gates the
+    SEPARATE ``zfcc-intrinsics`` audit tool. ``touch_test_*`` is operator-reference only (a manual
+    post-write ruler check; nothing in the verdict reads it). ``per_frame_pnp_px_fail`` is the
+    per-view outlier-rejection threshold."""
+    # intrinsics audit (separate tool, not the extrinsic verdict)
     intrinsics_rms_px_pass: float = 0.3
     intrinsics_rms_px_fail: float = 1.0
-    per_view_rms_multiple: float = 3.0
-    cross_solver_translation_mm_pass: float = 2.0
-    cross_solver_translation_mm_fail: float = 3.0
-    cross_solver_rotation_deg_pass: float = 0.2
-    cross_solver_rotation_deg_fail: float = 0.5
-    axxb_translation_mm_fail: float = 2.0
-    loo_translation_std_mm_fail: float = 5.0
+    # extrinsic write-gates (consumed by session._grade)
+    cross_solver_translation_mm_pass: float = 2.0   # > pass -> WARN
+    cross_solver_translation_mm_fail: float = 3.0   # > fail -> FAIL
+    cross_solver_rotation_deg_pass: float = 0.2     # > pass -> WARN
+    cross_solver_rotation_deg_fail: float = 0.5     # > fail -> FAIL
+    axxb_translation_mm_fail: float = 2.0           # > fail -> FAIL (pose self-consistency)
+    loo_translation_std_mm_fail: float = 5.0        # > fail -> FAIL (leave-one-out instability)
+    robot_world_translation_mm_warn: float = 2.0    # robot-world cross-check disagreement -> WARN
+    per_frame_pnp_px_fail: float = 1.0              # drop a view whose PnP RMS exceeds this
+    # operator reference only -- NOT read by the verdict (manual ruler check after the YAML is written)
     touch_test_mm_pass: float = 3.0
     touch_test_mm_fail: float = 5.0
-    per_frame_pnp_px_fail: float = 1.0
 
     @classmethod
     def load(cls, path: str | Path) -> PassBars:
