@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 620" font-family="-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif">
+  <defs>
+    <linearGradient id="metal" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#cbd5e1"/><stop offset=".5" stop-color="#f1f5f9"/><stop offset="1" stop-color="#94a3b8"/>
+    </linearGradient>
+    <linearGradient id="metal2" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#9aa6b2"/><stop offset=".5" stop-color="#e2e8f0"/><stop offset="1" stop-color="#7c8a99"/>
+    </linearGradient>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0L9 4.5L0 9z" fill="#2563eb"/></marker>
+  </defs>
+
+  <text x="30" y="40" font-size="26" font-weight="700" fill="#0f172a">Robot-flange stack (exploded)</text>
+  <text x="30" y="66" font-size="15" fill="#475569">Rizon 4s flange · gripper removed · Calib.io Robot Flange Mount · ChArUco board</text>
+
+  <!-- dashed centerline -->
+  <line x1="300" y1="95" x2="300" y2="585" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="6 6"/>
+
+  <!-- 1. Robot wrist / flange -->
+  <g>
+    <rect x="250" y="100" width="100" height="40" rx="6" fill="url(#metal)" stroke="#475569" stroke-width="2"/>
+    <ellipse cx="300" cy="140" rx="50" ry="12" fill="url(#metal2)" stroke="#475569" stroke-width="2"/>
+    <circle cx="278" cy="140" r="4" fill="#334155"/><circle cx="322" cy="140" r="4" fill="#334155"/>
+    <circle cx="300" cy="131" r="4" fill="#334155"/><circle cx="300" cy="149" r="4" fill="#334155"/>
+    <text x="370" y="118" font-size="15" font-weight="600" fill="#0f172a">Rizon 4s wrist flange</text>
+    <text x="370" y="138" font-size="13" fill="#475569">interface: ISO 9409-1-50-4-M6</text>
+    <text x="370" y="156" font-size="13" fill="#475569">(Ø50 mm bolt circle, 4× M6)</text>
+  </g>
+
+  <!-- remove-gripper callout -->
+  <g>
+    <circle cx="120" cy="175" r="15" fill="#dc2626"/><text x="120" y="181" font-size="16" font-weight="700" fill="#fff" text-anchor="middle">1</text>
+    <text x="145" y="172" font-size="14" font-weight="600" fill="#b91c1c">Remove the existing gripper</text>
+    <text x="145" y="190" font-size="12.5" fill="#7f1d1d">isolate &amp; lock out (LOTO) · de-energize tool · undo 4× M6</text>
+    <path d="M300 168 q-90 0 -150 0" stroke="#dc2626" stroke-width="2" fill="none" stroke-dasharray="4 4" marker-end="url(#arr)"/>
+  </g>
+
+  <!-- 2. Calib.io flange fitting -->
+  <g>
+    <rect x="245" y="210" width="110" height="46" rx="6" fill="url(#metal2)" stroke="#334155" stroke-width="2"/>
+    <ellipse cx="300" cy="210" rx="55" ry="13" fill="url(#metal)" stroke="#334155" stroke-width="2"/>
+    <circle cx="276" cy="210" r="4.5" fill="#1e293b"/><circle cx="324" cy="210" r="4.5" fill="#1e293b"/>
+    <circle cx="300" cy="200" r="4.5" fill="#1e293b"/><circle cx="300" cy="220" r="4.5" fill="#1e293b"/>
+    <!-- side lock screw -->
+    <rect x="355" y="226" width="14" height="9" rx="2" fill="#f59e0b" stroke="#b45309" stroke-width="1.5"/>
+    <text x="600" y="222" font-size="15" font-weight="600" fill="#0f172a" text-anchor="end">Calib.io flange fitting</text>
+    <text x="600" y="240" font-size="12.5" fill="#475569" text-anchor="end">Al 6082 · Ø75 mm · 22 mm thick</text>
+    <text x="600" y="257" font-size="12.5" fill="#475569" text-anchor="end">bolts to flange with the same 4× M6</text>
+    <circle cx="640" cy="170" r="15" fill="#16a34a"/><text x="640" y="176" font-size="16" font-weight="700" fill="#fff" text-anchor="middle">2</text>
+    <text x="660" y="176" font-size="13" fill="#15803d">optional dowel pin → repeatable remount</text>
+    <path d="M376 231 h70" stroke="#b45309" stroke-width="1.5" marker-end="url(#arr)"/>
+    <text x="452" y="235" font-size="12" fill="#b45309">3 mm hex side-lock</text>
+  </g>
+
+  <!-- 3. Plate adapter -->
+  <g>
+    <rect x="235" y="300" width="130" height="22" rx="4" fill="url(#metal)" stroke="#334155" stroke-width="2"/>
+    <text x="600" y="312" font-size="15" font-weight="600" fill="#0f172a" text-anchor="end">Low-profile plate adapter</text>
+    <text x="600" y="330" font-size="12.5" fill="#475569" text-anchor="end">locks into the fitting (3 mm hex)</text>
+    <circle cx="120" cy="311" r="15" fill="#16a34a"/><text x="120" y="317" font-size="16" font-weight="700" fill="#fff" text-anchor="middle">3</text>
+    <text x="145" y="316" font-size="13" fill="#15803d">adhere board → adapter (isopropanol + fast adhesive, press 20 s)</text>
+    <path d="M235 311 h-90" stroke="#16a34a" stroke-width="2" fill="none" stroke-dasharray="4 4" marker-end="url(#arr)"/>
+  </g>
+
+  <!-- 4. ChArUco board -->
+  <g>
+    <rect x="170" y="360" width="260" height="190" rx="6" fill="#f8fafc" stroke="#334155" stroke-width="2"/>
+    <!-- mini charuco pattern -->
+    <g>
+      <rect x="185" y="375" width="35" height="35" fill="#0f172a"/><rect x="255" y="375" width="35" height="35" fill="#0f172a"/><rect x="325" y="375" width="35" height="35" fill="#0f172a"/>
+      <rect x="220" y="410" width="35" height="35" fill="#0f172a"/><rect x="290" y="410" width="35" height="35" fill="#0f172a"/><rect x="360" y="410" width="35" height="35" fill="#0f172a"/>
+      <rect x="185" y="445" width="35" height="35" fill="#0f172a"/><rect x="255" y="445" width="35" height="35" fill="#0f172a"/><rect x="325" y="445" width="35" height="35" fill="#0f172a"/>
+      <rect x="220" y="480" width="35" height="35" fill="#0f172a"/><rect x="290" y="480" width="35" height="35" fill="#0f172a"/><rect x="360" y="480" width="35" height="35" fill="#0f172a"/>
+      <!-- tiny aruco glyphs in white squares -->
+      <g fill="#cbd5e1"><rect x="227" y="382" width="21" height="21"/><rect x="297" y="382" width="21" height="21"/><rect x="192" y="417" width="21" height="21"/><rect x="332" y="417" width="21" height="21"/></g>
+    </g>
+    <text x="600" y="430" font-size="15" font-weight="600" fill="#0f172a" text-anchor="end">ChArUco target (Calib.io)</text>
+    <text x="600" y="450" font-size="12.5" fill="#475569" text-anchor="end">DICT_5X5 · ceramic (small/rigid) or composite</text>
+    <text x="600" y="468" font-size="12.5" fill="#475569" text-anchor="end">measure square &amp; marker mm → config</text>
+    <circle cx="640" cy="392" r="15" fill="#2563eb"/><text x="640" y="398" font-size="16" font-weight="700" fill="#fff" text-anchor="middle">4</text>
+    <text x="660" y="398" font-size="13" fill="#1d4ed8">this is what the camera sees → T_cam_board</text>
+  </g>
+
+  <text x="30" y="600" font-size="12" fill="#94a3b8">Schematic, not to scale. Verify all dimensions against your hardware and the Calib.io / Flexiv documentation.</text>
+</svg>

@@ -13,7 +13,7 @@ Composition reads right-to-left and cancels adjacent frames:
 
 OpenCV's `X2Y` naming (e.g. `gripper2base`) means "transform that expresses X in Y" = maps points
 from X into Y = `T_Y_X`. The mapping between the two conventions is handled inside
-[`handeye.py`](../src/zfcc/handeye.py); everywhere else in this repo uses `T_A_B`.
+[`handeye.py`](https://github.com/ZihaoLu001/zed-flexiv-charuco-calib/blob/main/src/zfcc/handeye.py); everywhere else in this repo uses `T_A_B`.
 
 ## Frames used
 
@@ -36,7 +36,7 @@ Key transforms:
 
 Scalar-first **`(w, x, y, z)`**, the Flexiv / RDK convention. A "pose7" vector is
 `[x, y, z, qw, qx, qy, qz]` — exactly the layout of Flexiv `tcp_pose` / `flange_pose`. All
-conversions live in [`se3.py`](../src/zfcc/se3.py) (`pose7_to_T`, `T_to_pose7`, `quat_wxyz_to_R`,
+conversions live in [`se3.py`](https://github.com/ZihaoLu001/zed-flexiv-charuco-calib/blob/main/src/zfcc/se3.py) (`pose7_to_T`, `T_to_pose7`, `quat_wxyz_to_R`,
 `R_to_quat_wxyz`). Rigid inverses use `(Rᵀ, −Rᵀt)`, never a dense `np.linalg.inv`.
 
 ## Units
@@ -51,4 +51,4 @@ The board is bolted to the **flange**, so hand-eye must be paired with `T_base_f
 with `T_base_tcp` instead, the constant tool offset `T_flange_tcp` is folded into the solved
 `T_flange_board` *and* biases `T_base_camera` — silently, by exactly the tool offset. The Flexiv RDK
 exposes the flange pose as `RobotStates.flange_pose`; if a particular build lacks it, set the TCP to
-the flange (zero tool) so `tcp_pose == flange_pose`. See [`robot_io.py`](../src/zfcc/robot_io.py).
+the flange (zero tool) so `tcp_pose == flange_pose`. See [`robot_io.py`](https://github.com/ZihaoLu001/zed-flexiv-charuco-calib/blob/main/src/zfcc/robot_io.py).

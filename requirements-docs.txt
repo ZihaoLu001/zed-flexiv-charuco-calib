@@ -1,0 +1,3 @@
+# Documentation site (MkDocs Material). Pinned to the 9.x line (MkDocs 1.x); 10.x / MkDocs 2.0 is a
+# breaking rewrite per the Material team, so we stay on the stable series.
+mkdocs-material>=9.5,<10

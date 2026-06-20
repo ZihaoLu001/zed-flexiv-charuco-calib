@@ -1,0 +1,65 @@
+site_name: ZED 2i ↔ Flexiv Rizon ChArUco Calibration
+site_description: Strict eye-to-hand ChArUco calibration between a fixed ZED 2i and a Flexiv Rizon arm, with an illustrated hardware-setup guide and a falsifiable validation suite.
+site_author: Zihao Lu
+repo_url: https://github.com/ZihaoLu001/zed-flexiv-charuco-calib
+repo_name: ZihaoLu001/zed-flexiv-charuco-calib
+edit_uri: edit/main/docs/
+copyright: Apache-2.0 © 2026 Zihao Lu
+
+theme:
+  name: material
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+    - toc.follow
+    - search.highlight
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+
+nav:
+  - Home: index.md
+  - Hardware setup (start here): HARDWARE_SETUP.md
+  - Tutorial (first calibration): TUTORIAL.md
+  - Procedure (operator checklist): PROCEDURE.md
+  - Reference:
+    - Method (the math): METHOD.md
+    - Frames & conventions: FRAMES.md
+    - Pass bars (gates): PASS_BARS.md
+    - Versions & compatibility: VERSIONS.md
+    - Prior art (how others do it): PRIOR_ART.md
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/ZihaoLu001/zed-flexiv-charuco-calib

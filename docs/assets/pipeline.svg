@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 200" font-family="-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif">
+  <defs><marker id="p" markerWidth="10" markerHeight="10" refX="7" refY="5" orient="auto"><path d="M0 0L10 5L0 10z" fill="#64748b"/></marker></defs>
+  <text x="30" y="34" font-size="22" font-weight="700" fill="#0f172a">Software pipeline (after the hardware is mounted)</text>
+
+  <g font-size="13" font-weight="600" text-anchor="middle">
+    <!-- nodes -->
+    <g>
+      <rect x="20" y="70" width="120" height="64" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+      <text x="80" y="98" fill="#1d4ed8">render-board</text><text x="80" y="118" font-size="11" font-weight="400" fill="#475569">verify geometry</text>
+    </g>
+    <g>
+      <rect x="170" y="70" width="120" height="64" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+      <text x="230" y="98" fill="#1d4ed8">collect</text><text x="230" y="118" font-size="11" font-weight="400" fill="#475569">diverse poses</text>
+    </g>
+    <g>
+      <rect x="320" y="70" width="120" height="64" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+      <text x="380" y="98" fill="#1d4ed8">inspect</text><text x="380" y="118" font-size="11" font-weight="400" fill="#475569">diversity verdict</text>
+    </g>
+    <g>
+      <rect x="470" y="70" width="120" height="64" rx="10" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2"/>
+      <text x="530" y="98" fill="#6d28d9">solve</text><text x="530" y="118" font-size="11" font-weight="400" fill="#475569">5 solvers + gates</text>
+    </g>
+    <g>
+      <rect x="620" y="70" width="130" height="64" rx="10" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+      <text x="685" y="94" fill="#15803d">T_base_zed2i</text><text x="685" y="113" font-size="11" font-weight="400" fill="#475569">.yaml (if not FAIL)</text>
+    </g>
+    <g>
+      <rect x="780" y="70" width="150" height="64" rx="10" fill="#fffbeb" stroke="#f59e0b" stroke-width="2"/>
+      <text x="855" y="94" fill="#b45309">touch test</text><text x="855" y="113" font-size="11" font-weight="400" fill="#475569">manual · &lt;3 mm tip</text>
+    </g>
+  </g>
+  <g stroke="#64748b" stroke-width="2" marker-end="url(#p)">
+    <line x1="140" y1="102" x2="168" y2="102"/><line x1="290" y1="102" x2="318" y2="102"/>
+    <line x1="440" y1="102" x2="468" y2="102"/><line x1="590" y1="102" x2="618" y2="102"/>
+    <line x1="750" y1="102" x2="778" y2="102"/>
+  </g>
+  <text x="480" y="172" font-size="12" fill="#94a3b8" text-anchor="middle">Full first-timer walkthrough: see the Tutorial. Hardware mounting: see Hardware Setup.</text>
+</svg>

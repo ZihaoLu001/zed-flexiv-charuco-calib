@@ -26,7 +26,7 @@ rather than reverse-engineered. All claims here were web-verified against primar
   the other four solvers and *gate on their agreement* (a data-quality signal), and cross-check with
   the structurally-different `calibrateRobotWorldHandEye`. The reprojection-BA accuracy ceiling
   (industrial_calibration/Ceres) is available as an **optional** scipy refinement in
-  [`refine.py`](../src/zfcc/refine.py), reporting covariance — off by default.
+  [`refine.py`](https://github.com/ZihaoLu001/zed-flexiv-charuco-calib/blob/main/src/zfcc/refine.py), reporting covariance — off by default.
 - **Per-pose inversion for eye-to-hand.** `calibrateHandEye` has no eye-to-hand flag; we invert each
   `T_base_flange` before the call so the output is `T_base_camera`. Inverting only the *final* output
   is the common wrong shortcut — a synthetic test asserts our sign is right.

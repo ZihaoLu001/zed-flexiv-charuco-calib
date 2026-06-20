@@ -11,7 +11,7 @@ step is the single most common way to get a confident-but-wrong result.
   ```bash
   zfcc-render-board --board configs/board_calibio_9x14.yaml --out board.png
   ```
-- Open [`configs/board_calibio_9x14.yaml`](../configs/board_calibio_9x14.yaml) and confirm:
+- Open [`configs/board_calibio_9x14.yaml`](https://github.com/ZihaoLu001/zed-flexiv-charuco-calib/blob/main/configs/board_calibio_9x14.yaml) and confirm:
   `squares_xy` is **(cols, rows)**, `square_length_m` and `marker_length_m` match the spec sheet, and
   `aruco_dict` is the dictionary actually printed on the board. A 1 mm error on a 40 mm square biases
   the whole result by 2.5 %.

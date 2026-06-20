@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 460" font-family="-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif">
+  <defs>
+    <radialGradient id="face" cx="40%" cy="35%" r="75%">
+      <stop offset="0" stop-color="#f1f5f9"/><stop offset="1" stop-color="#94a3b8"/>
+    </radialGradient>
+    <marker id="a2" markerWidth="9" markerHeight="9" refX="4.5" refY="4.5" orient="auto"><path d="M0 0L9 4.5L0 9z" fill="#2563eb"/></marker>
+    <marker id="a2s" markerWidth="9" markerHeight="9" refX="4.5" refY="4.5" orient="auto"><path d="M9 0L0 4.5L9 9z" fill="#2563eb"/></marker>
+  </defs>
+
+  <text x="30" y="38" font-size="22" font-weight="700" fill="#0f172a">Flange bolt pattern — ISO 9409-1-50-4-M6</text>
+  <text x="30" y="62" font-size="14" fill="#475569">Top view. Shared by the Rizon 4s flange and the Calib.io fitting → they bolt together directly.</text>
+
+  <!-- flange face -->
+  <circle cx="250" cy="270" r="150" fill="url(#face)" stroke="#475569" stroke-width="3"/>
+  <!-- centre boss -->
+  <circle cx="250" cy="270" r="40" fill="#e2e8f0" stroke="#475569" stroke-width="2.5"/>
+  <circle cx="250" cy="270" r="3" fill="#334155"/>
+  <!-- bolt circle (Ø50 => r=25 px scaled; show as guide) -->
+  <circle cx="250" cy="270" r="95" fill="none" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="5 5"/>
+  <!-- 4x M6 holes at N/E/S/W -->
+  <g fill="#1e293b">
+    <circle cx="250" cy="175" r="11"/><circle cx="345" cy="270" r="11"/><circle cx="250" cy="365" r="11"/><circle cx="155" cy="270" r="11"/>
+  </g>
+  <g fill="#64748b">
+    <circle cx="250" cy="175" r="5"/><circle cx="345" cy="270" r="5"/><circle cx="250" cy="365" r="5"/><circle cx="155" cy="270" r="5"/>
+  </g>
+  <!-- dowel/keyway hole (orientation) -->
+  <circle cx="320" cy="200" r="7" fill="#16a34a" stroke="#15803d" stroke-width="2"/>
+  <text x="334" y="196" font-size="12.5" font-weight="600" fill="#15803d">dowel /</text>
+  <text x="334" y="211" font-size="12.5" font-weight="600" fill="#15803d">keyway</text>
+
+  <!-- bolt circle dimension -->
+  <line x1="155" y1="270" x2="345" y2="270" stroke="#2563eb" stroke-width="1.5" marker-start="url(#a2s)" marker-end="url(#a2)"/>
+  <rect x="212" y="258" width="76" height="22" rx="4" fill="#fff" stroke="#2563eb"/>
+  <text x="250" y="274" font-size="13" font-weight="700" fill="#1d4ed8" text-anchor="middle">Ø 50 mm</text>
+
+  <!-- labels -->
+  <text x="250" y="158" font-size="12.5" fill="#0f172a" text-anchor="middle">M6 ×4 @ 90°</text>
+  <text x="250" y="445" font-size="12.5" fill="#94a3b8" text-anchor="middle">Use the dowel pin (or keyway) to fix orientation so the board re-mounts repeatably.</text>
+</svg>

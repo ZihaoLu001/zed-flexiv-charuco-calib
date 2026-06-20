@@ -41,7 +41,7 @@ T_target2cam   := T_cam_board          (as measured)
 ```
 
 and the returned `X` is then **`T_base_camera`**. This inversion is the entire eye-to-hand trick and
-is implemented in exactly one place — [`handeye.solve_eye_to_hand`](../src/zfcc/handeye.py). The unit
+is implemented in exactly one place — [`handeye.solve_eye_to_hand`](https://github.com/ZihaoLu001/zed-flexiv-charuco-calib/blob/main/src/zfcc/handeye.py). The unit
 test `test_inversion_sign_guard` deliberately feeds the wrong convention and asserts the result is
 detectably wrong (> 5 mm vs the < 0.5 mm correct solve), because a flipped inversion still returns a
 clean, plausible-looking matrix.
@@ -89,6 +89,6 @@ still looks perfect, because reprojection only exercises the camera↔board leg,
 base↔camera chain. The fixes here are structural:
 
 1. The board moves through a **3D volume** of flange poses (not one plane).
-2. A **diversity gate** ([`diversity.assess_diversity`](../src/zfcc/diversity.py)) measures rotation-
+2. A **diversity gate** ([`diversity.assess_diversity`](https://github.com/ZihaoLu001/zed-flexiv-charuco-calib/blob/main/src/zfcc/diversity.py)) measures rotation-
    axis spread and a coplanarity index and **refuses** a degenerate set.
 3. A **physical touch test** measures the real base-frame error at the tool tip.

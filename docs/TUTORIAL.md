@@ -73,7 +73,7 @@ you're choosing one:
   and put those true values in the config. *This sets the metric scale of every pose the calibration
   produces* — a 1 mm error on a 40 mm square biases everything by 2.5%.
 
-Edit [`configs/board_calibio_9x14.yaml`](../configs/board_calibio_9x14.yaml):
+Edit [`configs/board_calibio_9x14.yaml`](https://github.com/ZihaoLu001/zed-flexiv-charuco-calib/blob/main/configs/board_calibio_9x14.yaml):
 
 ```yaml
 board:
@@ -163,8 +163,9 @@ with small RMS. A free solve is reported alongside for transparency. The tool al
 > `fisheye` (best-effort; OpenCV's fisheye solver is fragile on planar ChArUco targets — see
 > [VERSIONS.md](VERSIONS.md)). Don't enable `rational8` on a normal lens; it overfits.
 
-**Reading the result:** RMS **< 0.5 px** is good, **< 1 px** acceptable, a **median > 1 px** signals
-failure. But — and this is the rule professionals repeat — **a low RMS does *not* prove a good
+**Reading the result:** RMS **< 0.3 px** is good, **< 1 px** acceptable, a **median > 1 px** signals
+failure (these are the `intrinsics_rms_px_pass`/`_fail` bars in
+[`configs/pass_bars.yaml`](https://github.com/ZihaoLu001/zed-flexiv-charuco-calib/blob/main/configs/pass_bars.yaml)). But — and this is the rule professionals repeat — **a low RMS does *not* prove a good
 calibration**; it only shows the model can fit the data. That's why we also report **per-parameter
 standard deviations** (is `fx`/`cx` actually well-constrained?) and the coverage metrics.
 
@@ -202,7 +203,7 @@ report (every metric below) is saved to `runs/s001/report.json`.
 ## 6. Validate before you trust it
 
 Read the pass bars in `report.json` (all thresholds live in
-[`configs/pass_bars.yaml`](../configs/pass_bars.yaml)):
+[`configs/pass_bars.yaml`](https://github.com/ZihaoLu001/zed-flexiv-charuco-calib/blob/main/configs/pass_bars.yaml)):
 
 | Metric | Bar | Effect on the write |
 |---|---|---|
@@ -267,7 +268,7 @@ measure the real miss with a ruler or dial indicator: **< 3 mm** is good, **> 5 
 | rotation axes | ≥ 2 required; this repo gates ≥ 3 | requirement + repo choice |
 | poses | 5 min / 12–15 plateau; this repo: 15 fail, 20 ideal | guidance + repo choice |
 | marker/square ratio | ~0.6–0.75 (marker strictly < square) | guidance |
-| intrinsics RMS | < 0.5 good, < 1 acceptable | standard (calib.io) |
+| intrinsics RMS | < 0.3 good / < 1.0 fail | **repo-chosen bar** (sub-px norm: calib.io) |
 | coplanarity index / touch test | 0.04 / 3 mm / 5 mm | **repo-chosen bars** |
 | distortion default | brown5 (k1,k2,p1,p2,k3) | standard |
 | primary hand-eye solver | DANIILIDIS | matches MoveIt default |

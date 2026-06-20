@@ -1,9 +1,9 @@
 # Pass bars — what "PASS / WARN / FAIL" means
 
-Every numeric threshold lives in [`configs/pass_bars.yaml`](../configs/pass_bars.yaml) and
-[`config.PassBars`](../src/zfcc/config.py); the diversity thresholds live in
-[`config.DiversityGates`](../src/zfcc/config.py). The grading logic is
-[`session._grade`](../src/zfcc/session.py). Tighten for research-grade work; loosen only with a
+Every numeric threshold lives in [`configs/pass_bars.yaml`](https://github.com/ZihaoLu001/zed-flexiv-charuco-calib/blob/main/configs/pass_bars.yaml) and
+[`config.PassBars`](https://github.com/ZihaoLu001/zed-flexiv-charuco-calib/blob/main/src/zfcc/config.py); the diversity thresholds live in
+[`config.DiversityGates`](https://github.com/ZihaoLu001/zed-flexiv-charuco-calib/blob/main/src/zfcc/config.py). The grading logic is
+[`session._grade`](https://github.com/ZihaoLu001/zed-flexiv-charuco-calib/blob/main/src/zfcc/session.py). Tighten for research-grade work; loosen only with a
 documented reason.
 
 ## Verdicts
